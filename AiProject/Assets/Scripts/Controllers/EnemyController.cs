@@ -11,12 +11,16 @@ public class EnemyController : MonoBehaviour
     NavMeshAgent agent; //Reference to the NavMeshAgent
     CharacterCombat combat;
 
+    public float speed;
+
     // Start is called before the first frame update
     void Start()
     {
         target = PlayerManager.instance.player.transform;
         agent = GetComponent<NavMeshAgent>();
         combat = GetComponent<CharacterCombat>();
+        agent.speed = speed;
+
     }
 
     // Update is called once per frame

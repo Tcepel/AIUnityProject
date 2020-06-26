@@ -15,7 +15,6 @@ public class Patrol : MonoBehaviour
 
     public float speed;
     private float waitTime;
-    public float startWaitTime;
 
     public Transform[] moveSpots;
     private int randomSpot;
@@ -25,7 +24,8 @@ public class Patrol : MonoBehaviour
         target = PlayerManager.instance.player.transform;
         agent = GetComponent<NavMeshAgent>();
         combat = GetComponent<CharacterCombat>();
-    }
+        waitTime = UnityEngine.Random.Range(0, 4);
+}
 
     void Awake()
     {
@@ -36,7 +36,6 @@ public class Patrol : MonoBehaviour
 
     void Update()
     {
-
         float distance = Vector3.Distance(target.position, transform.position);
 
         if (distance <= lookRadius)
@@ -59,21 +58,21 @@ public class Patrol : MonoBehaviour
         }
         else
         {
-            //InvokeRepeating("Wander", 1f, 10f);
             Wander();
-
         }
     }
 
     void Wander()
     {
-        if (Vector3.Distance(transform.position, moveSpots[randomSpot].position) >= 5* speed * .01f)
+        //moves to the random spot
+        if (Vector3.Distance(transform.position, moveSpots[randomSpot].position) >= 2f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, moveSpots[randomSpot].position, speed * Time.deltaTime);
+            agent.SetDestination(moveSpots[randomSpot].position);
         }
-        UnityEngine.Debug.Log("speed * Time.deltaTime: " + speed * Time.deltaTime);
-        if (Vector3.Distance(transform.position, moveSpots[randomSpot].position) < 5 * speed * .01f)
+        //if reaches the spot, then waits
+        if (Vector3.Distance(transform.position, moveSpots[randomSpot].position) < 2f)
         {
+            //and finds another spot
             if (waitTime <= 0)
             {
                 int currentSpot = randomSpot;
@@ -85,7 +84,7 @@ public class Patrol : MonoBehaviour
                         randomSpot = UnityEngine.Random.Range(0, moveSpots.Length);
                     }
                 }
-                waitTime = startWaitTime;
+                waitTime = UnityEngine.Random.Range(0, 4);
             }
             else
             {
